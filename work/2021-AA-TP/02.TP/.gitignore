@@ -1,0 +1,12 @@
+*.zip
+audios/
+Propios/
+*.wav
+*.csv
+*.pkl
+<<<<<<< HEAD
+*.mp3
+*.ogg
+*.opus
+=======
+>>>>>>> eb35580550420051d4d43e6eac086ea33074d4ff

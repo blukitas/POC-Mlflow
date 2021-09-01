@@ -35,7 +35,9 @@ Prueba de concepto de un entorno para data science.
 
 ## TODO:
 - Mejorar el readme
+- Test punta a punta
 - Hacer un minitutorial y algunas capturas
+- Git como servidor estático?
 - Subirlo a linkedin para hacer un poco de ruido
 
 ## Mejoras
