@@ -1,0 +1,14 @@
+sqlalchemy==1.4.0
+pyodbc==4.0.30
+altair
+seaborn
+sklearn
+sweetviz
+fancyimpute
+mlflow
+cloudpickle
+black
+imblearn
+opensmile
+librosa
+optuna
