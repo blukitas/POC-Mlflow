@@ -1,0 +1,69 @@
+version: '2.1'
+services:
+  db:
+    restart: always
+    image: mysql/mysql-server:5.7.28
+    container_name: db
+
+
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: 'mlflow_db'
+      MYSQL_USER: 'admin' 
+      MYSQL_PASSWORD: 'admin' 
+      MYSQL_ROOT_PASSWORD: 'MlflowUser' 
+    volumes:
+      - ./dbdata:/var/lib/mysql
+    networks:
+      - A
+
+  web:
+    restart: always
+    depends_on: [db]
+    # You can now specify both a build and an image key if you're using the new file format. docker-compose build will build the image 
+    build: ./mlflow/
+    # image: mlflow_server
+    container_name: mlflow_server
+    # expose:
+    #   - "5000"
+    ports:
+     - "18887:8000"     
+     - "18889:8888"     
+     - "18890:5000"     
+    volumes:
+      - ./ml-flow-store:/mnt/mlruns/
+    # environment:
+    #   - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+    #   - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    #   - AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+    # command: mlflow server --backend-store-uri mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@db:3306/${MYSQL_DATABASE} --default-artifact-root s3://mlflow_bucket/mlflow/ --host 0.0.0.0    
+    command: mlflow server --host 0.0.0.0 --backend-store-uri mysql+pymysql://admin:admin@db:3306/mlflow_db --default-artifact-root  file://mnt/mlruns/  
+    networks:
+      - A
+
+  notebook:
+    restart: always
+    # image: t-jupyter:latest
+    build: ./tensorflow/
+    # image: t-jupyter
+    container_name: tensorflow
+    environment:
+      - USER_FLAG=true
+    volumes:
+      - ./tensorflow/conf:/home/User/conf
+      - ./work:/home/User/work
+      - ./notebook-store:/mlruns/
+    ports:
+      - "8888:8888"
+    networks:
+      - A
+    # healthcheck:
+    #   test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+    #   interval: 30s
+    #   timeout: 30s
+    #   retries: 3
+
+networks:
+  A:
+    driver: bridge
